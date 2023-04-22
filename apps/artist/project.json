@@ -1,7 +1,7 @@
 {
-  "name": "albums",
+  "name": "artist",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/albums/src",
+  "sourceRoot": "apps/artist/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -11,12 +11,12 @@
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/apps/albums",
-        "main": "apps/albums/src/main.ts",
-        "tsConfig": "apps/albums/tsconfig.app.json",
-        "assets": ["apps/albums/src/assets"],
+        "outputPath": "dist/apps/artist",
+        "main": "apps/artist/src/main.ts",
+        "tsConfig": "apps/artist/tsconfig.app.json",
+        "assets": ["apps/artist/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/albums/webpack.config.js"
+        "webpackConfig": "apps/artist/webpack.config.js"
       },
       "configurations": {
         "development": {},
@@ -27,14 +27,14 @@
       "executor": "@nrwl/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "albums:build"
+        "buildTarget": "artist:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "albums:build:development"
+          "buildTarget": "artist:build:development"
         },
         "production": {
-          "buildTarget": "albums:build:production"
+          "buildTarget": "artist:build:production"
         }
       }
     },
@@ -42,14 +42,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/albums/**/*.ts"]
+        "lintFilePatterns": ["apps/artist/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/albums/jest.config.ts",
+        "jestConfig": "apps/artist/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
@@ -61,7 +61,7 @@
     },
     "docker-build": {
       "dependsOn": ["build"],
-      "command": "docker build -f apps/albums/Dockerfile . -t albums"
+      "command": "docker build -f apps/artist/Dockerfile . -t artist"
     }
   },
   "tags": []

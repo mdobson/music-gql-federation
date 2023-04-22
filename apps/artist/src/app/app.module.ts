@@ -9,23 +9,20 @@ import {
   ApolloFederationDriver,
   ApolloFederationDriverConfig,
 } from '@nestjs/apollo';
-import { AlbumsModule } from '../albums/albums.module';
-import { Artist } from '../albums/entities/artist.entity';
-import path from 'path';
+import { ArtistModule } from '../artist/artist.module';
+import { Album } from '../artist/entities/album.entity';
 
 @Module({
   imports: [
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
       driver: ApolloFederationDriver,
-      autoSchemaFile: {
-        federation: 2,
-      },
+      autoSchemaFile: { federation: 2 },
       buildSchemaOptions: {
-        orphanedTypes: [Artist],
+        orphanedTypes: [Album],
       },
       playground: true,
     }),
-    AlbumsModule,
+    ArtistModule,
   ],
   controllers: [AppController],
   providers: [AppService],

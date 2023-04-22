@@ -1,0 +1,37 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.3", import: ["@composeDirective", "@extends", "@external", "@inaccessible", "@interfaceObject", "@key", "@override", "@provides", "@requires", "@shareable", "@tag"])
+
+type Artist
+  @extends
+  @key(fields: "id")
+{
+  """Unique Identifier for Artist"""
+  id: ID! @external
+}
+
+type Album
+  @key(fields: "id")
+{
+  """Unique Identifier for Album"""
+  id: ID!
+
+  """Album Title"""
+  title: String!
+
+  """Album Artist"""
+  artists: [Artist!]!
+
+  """Album Artist ID"""
+  artist_ids: [ID!]!
+
+  """Album Year"""
+  year: Int!
+
+  """Album Genre"""
+  genre: String!
+}
+
+type Query {
+  albums: [Album!]!
+  album(id: ID!): Album!
+}

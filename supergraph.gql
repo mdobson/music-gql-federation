@@ -1,0 +1,94 @@
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.3", for: EXECUTION)
+{
+  query: Query
+}
+
+directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+
+directive @join__field(graph: join__Graph, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true, isInterfaceObject: Boolean! = false) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+type Album
+  @join__type(graph: ALBUMS, key: "id")
+  @join__type(graph: ARTISTS, key: "id", extension: true)
+{
+  """Unique Identifier for Album"""
+  id: ID!
+
+  """Album Title"""
+  title: String! @join__field(graph: ALBUMS)
+
+  """Album Artist"""
+  artists: [Artist!]! @join__field(graph: ALBUMS)
+
+  """Album Artist ID"""
+  artist_ids: [ID!]! @join__field(graph: ALBUMS)
+
+  """Album Year"""
+  year: Int! @join__field(graph: ALBUMS)
+
+  """Album Genre"""
+  genre: String! @join__field(graph: ALBUMS)
+}
+
+type Artist
+  @join__type(graph: ALBUMS, key: "id", extension: true)
+  @join__type(graph: ARTISTS, key: "id")
+{
+  """Unique Identifier for Artist"""
+  id: ID!
+
+  """Artist Name"""
+  name: String! @join__field(graph: ARTISTS)
+
+  """Artist Label"""
+  label: String! @join__field(graph: ARTISTS)
+
+  """Artist Album IDs"""
+  album_ids: [ID!]! @join__field(graph: ARTISTS)
+
+  """Artist Albums"""
+  albums: [Album!]! @join__field(graph: ARTISTS)
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  ALBUMS @join__graph(name: "albums", url: "http://localhost:3000/graphql")
+  ARTISTS @join__graph(name: "artists", url: "http://localhost:3001/graphql")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type Query
+  @join__type(graph: ALBUMS)
+  @join__type(graph: ARTISTS)
+{
+  albums: [Album!]! @join__field(graph: ALBUMS)
+  album(id: ID!): Album! @join__field(graph: ALBUMS)
+  artists: [Artist!]! @join__field(graph: ARTISTS)
+  artist(id: ID!): Artist! @join__field(graph: ARTISTS)
+}

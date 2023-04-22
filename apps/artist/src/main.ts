@@ -8,18 +8,19 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
 import { GraphQLSchemaHost } from '@nestjs/graphql';
-import fs from 'fs';
 import { printSubgraphSchema } from '@apollo/subgraph';
+
+import fs from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3001;
   await app.listen(port);
   const gqlSchemaFactory = app.get(GraphQLSchemaHost);
   fs.writeFileSync(
-    './albums.graphql',
+    './artists.graphql',
     printSubgraphSchema(gqlSchemaFactory.schema),
     'utf8'
   );

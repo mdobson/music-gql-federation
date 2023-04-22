@@ -1,0 +1,10 @@
+federation_version: =2.3.2
+subgraphs:
+  albums:
+    routing_url: http://localhost:3000/graphql
+    schema:
+      file: ./albums.graphql
+  artists:
+    routing_url: http://localhost:3001/graphql
+    schema:
+      file: ./artists.graphql
