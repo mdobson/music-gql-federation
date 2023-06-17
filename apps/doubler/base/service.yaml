@@ -1,0 +1,18 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: helloworld-go
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - image: registry.digitalocean.com/dev-reg-api-coach/nx-go-doubler:latest
+          env:
+            - name: TARGET
+              value: 'Go Sample v1'
+            - name: CONFIG_ONE
+              valueFrom:
+                configMapKeyRef:
+                  name: doubler-go-map
+                  key: altGreeting

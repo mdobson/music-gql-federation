@@ -1,0 +1,74 @@
+{
+  "name": "doubler",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/doubler",
+  "targets": {
+    "build_app": {
+      "executor": "@nx-go/nx-go:build",
+      "options": {
+        "outputPath": "dist/apps/doubler/doubler",
+        "main": "apps/doubler/main.go"
+      }
+    },
+    "build": {
+      "dependsOn": ["build_app"],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "echo 'Generating build info'",
+          "tar cf - ./dist/apps/doubler | shasum -a 1 | awk '{ print /^@/ ? $1 : substr($1, 1, 10) }' > ./dist/apps/doubler/build-info.txt"
+        ],
+        "parallel": false
+      }
+    },
+    "build_container": {
+      "workingDirectory": ".",
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "echo 'Building container'",
+          "docker build -t nx-go-doubler -f ./apps/doubler/Dockerfile ."
+        ],
+        "parallel": false
+      }
+    },
+    "tag_container": {
+      "workingDirectory": ".",
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "echo 'Tagging container'",
+          "docker tag nx-go-doubler:latest registry.digitalocean.com/dev-reg-api-coach/nx-go-doubler:$(cat ./dist/apps/doubler/build-info.txt)",
+          "docker tag nx-go-doubler:latest registry.digitalocean.com/dev-reg-api-coach/nx-go-doubler:latest"
+        ],
+        "parallel": false
+      }
+    },
+    "push_container": {
+      "workingDirectory": ".",
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "echo 'Pushing container'",
+          "docker image push registry.digitalocean.com/dev-reg-api-coach/nx-go-doubler:$(cat ./dist/apps/doubler/build-info.txt)",
+          "docker image push registry.digitalocean.com/dev-reg-api-coach/nx-go-doubler:latest"
+        ],
+        "parallel": false
+      }
+    },
+    "serve": {
+      "executor": "@nx-go/nx-go:serve",
+      "options": {
+        "main": "apps/doubler/main.go"
+      }
+    },
+    "test": {
+      "executor": "@nx-go/nx-go:test"
+    },
+    "lint": {
+      "executor": "@nx-go/nx-go:lint"
+    }
+  },
+  "tags": []
+}
